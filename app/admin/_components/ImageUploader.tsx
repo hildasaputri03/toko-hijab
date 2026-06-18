@@ -28,7 +28,8 @@ export default function ImageUploader({ defaultUrl, onUploaded }: Props) {
     setLoading(false);
 
     if (!res.ok) {
-      alert('Upload gambar gagal');
+      const errText = await res.text();
+      alert(`Upload gambar gagal: ${errText}`);
       return;
     }
 
