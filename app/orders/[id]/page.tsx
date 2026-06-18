@@ -7,6 +7,8 @@ import Link from 'next/link';
 import PaymentMethodSelector from '@/app/orders/_components/PaymentMethodSelector';
 import OrderReceipt from '@/app/orders/_components/OrderReceipt';
 
+export const dynamic = 'force-dynamic';
+
 type Props = { params: Promise<{ id: string }> };
 
 export default async function OrderDetailPage({ params }: Props) {

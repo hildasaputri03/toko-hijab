@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductsPage() {
   const productService = new ProductService();
   const products = await productService.getLatestProducts(20);

@@ -2,6 +2,9 @@ import { prisma } from '@/lib/prisma';
 import ProductTableWithCategoryModal from '@/app/admin/_components/ProductTableWithCategoryModal';
 import { revalidatePath } from 'next/cache';
 
+export const dynamic = 'force-dynamic';
+
+
 function slugify(value: string) {
   return value
     .toLowerCase()

@@ -5,6 +5,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrdersPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');

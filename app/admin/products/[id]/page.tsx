@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import ProductFormEdit from "@/app/admin/_components/ProductFormEdit";
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: Promise<{ id: string }>; // <- params sekarang Promise
 };

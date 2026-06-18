@@ -8,6 +8,9 @@ import Image from 'next/image';
 import { updateCartQuantity, removeCartItem } from './actions';
 import CartItemActions from './CartItemActions';
 
+export const dynamic = 'force-dynamic';
+
+
 export default async function CartPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');

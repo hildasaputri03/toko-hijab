@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
+
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
