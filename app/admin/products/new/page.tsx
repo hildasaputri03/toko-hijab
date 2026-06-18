@@ -15,10 +15,17 @@ async function createProduct(formData: FormData) {
     ? Number(formData.get('categoryId'))
     : null;
 
+  let uniqueSlug = slug;
+  let counter = 1;
+  while (await prisma.product.findUnique({ where: { slug: uniqueSlug } })) {
+    uniqueSlug = `${slug}-${counter}`;
+    counter++;
+  }
+
   await prisma.product.create({
     data: {
       name,
-      slug,
+      slug: uniqueSlug,
       description,
       price,
       stock,

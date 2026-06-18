@@ -40,6 +40,8 @@ async function updateProduct(id: number, formData: FormData) {
 async function deleteProduct(id: number) {
   "use server";
 
+  await prisma.cartItem.deleteMany({ where: { productId: id } });
+  await prisma.orderItem.deleteMany({ where: { productId: id } });
   await prisma.product.delete({
     where: { id },
   });

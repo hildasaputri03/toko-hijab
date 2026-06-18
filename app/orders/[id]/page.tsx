@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -17,6 +17,7 @@ export default async function OrderDetailPage({ params }: Props) {
 
   const user = await getCurrentUser();
   if (!user) notFound();
+  if (user.role === 'ADMIN') redirect('/admin');
 
   const order = await prisma.order.findFirst({
     where: { id: orderId, userId: user.id },

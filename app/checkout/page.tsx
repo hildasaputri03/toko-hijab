@@ -12,6 +12,7 @@ async function createOrder(formData: FormData) {
 
   const user = await getCurrentUser();
   if (!user) redirect('/login');
+  if (user.role === 'ADMIN') redirect('/admin');
 
   const fullName = formData.get('fullName') as string;
   const phone = formData.get('phone') as string;
@@ -73,6 +74,7 @@ async function createOrder(formData: FormData) {
 export default async function CheckoutPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
+  if (user.role === 'ADMIN') redirect('/admin');
 
   const cartItems = await prisma.cartItem.findMany({
     where: { userId: user.id },

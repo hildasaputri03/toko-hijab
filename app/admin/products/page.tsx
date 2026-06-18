@@ -56,6 +56,8 @@ export default async function AdminProductsPage() {
     const id = Number(formData.get('id'));
     if (!id) return;
 
+    await prisma.cartItem.deleteMany({ where: { productId: id } });
+    await prisma.orderItem.deleteMany({ where: { productId: id } });
     await prisma.product.delete({ where: { id } });
     revalidatePath('/admin/products');
   }

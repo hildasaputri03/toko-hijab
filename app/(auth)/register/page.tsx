@@ -1,51 +1,47 @@
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import logo from '@/assets/logo.jpg';
+import { registerAction } from './action';
 
-async function register(formData: FormData) {
-  'use server';
+export default function RegisterPage() {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const name = formData.get('name') as string;
-  const email = (formData.get('email') as string).toLowerCase();
-  const password = formData.get('password') as string;
-  const confirmPassword = formData.get('confirmPassword') as string;
+  const handleSubmit = async (formData: FormData) => {
+    setLoading(true);
+    setError('');
 
-  if (password !== confirmPassword) {
-    redirect('/register?error=Password tidak cocok');
-  }
+    const result = await registerAction(formData);
 
-  if (password.length < 6) {
-    redirect('/register?error=Password minimal 6 karakter');
-  }
+    if (result?.error) {
+      setError(result.error);
+      setLoading(false);
+      return;
+    }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    redirect('/register?error=Email sudah terdaftar');
-  }
+    if (result?.success) {
+      // Auto login setelah berhasil daftar
+      const signInResult = await signIn('credentials', {
+        email: result.email,
+        password: result.password,
+        redirect: false,
+      });
 
-  const hash = await bcrypt.hash(password, 12);
-
-  await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hash,
-      role: 'CUSTOMER',
-    },
-  });
-
-  redirect('/login?message=Akun berhasil dibuat! Silakan login');
-}
-
-type Props = {
-  searchParams: { error?: string };
-};
-
-export default function RegisterPage({ searchParams }: Props) {
-  const error = searchParams.error;
+      if (signInResult?.error) {
+        setError('Berhasil mendaftar, tetapi gagal masuk otomatis. Silakan login manual.');
+        setLoading(false);
+      } else {
+        // Arahkan ke beranda setelah berhasil daftar & login
+        router.push('/');
+      }
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-rose-50 via-white to-red-50 px-4 py-12">
@@ -69,7 +65,7 @@ export default function RegisterPage({ searchParams }: Props) {
 
         {/* Form Card */}
         <form
-          action={register}
+          action={handleSubmit}
           className="space-y-5 rounded-3xl bg-white p-8 shadow-2xl"
         >
           {/* Error Message */}
@@ -138,9 +134,10 @@ export default function RegisterPage({ searchParams }: Props) {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full rounded-xl bg-gradient-to-r from-red-900 to-rose-700 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:from-red-950 hover:to-rose-800 hover:shadow-xl"
+            disabled={loading}
+            className="w-full rounded-xl bg-gradient-to-r from-red-900 to-rose-700 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:from-red-950 hover:to-rose-800 hover:shadow-xl disabled:opacity-50"
           >
-            Buat Akun
+            {loading ? 'Memproses...' : 'Buat Akun'}
           </button>
 
           {/* Divider */}
