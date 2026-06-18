@@ -26,6 +26,13 @@ export async function POST(request: Request) {
   }
 
   // Fallback untuk penyimpanan lokal (di komputer / localhost)
+  // JANGAN jalankan ini di Vercel, karena Vercel read-only
+  if (process.env.VERCEL === '1') {
+    return NextResponse.json({ 
+      error: 'Vercel Blob Token is missing. Silakan cek tab Storage di Vercel dan pastikan sudah di-Redeploy.' 
+    }, { status: 500 });
+  }
+
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
